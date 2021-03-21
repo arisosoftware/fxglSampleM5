@@ -10,7 +10,9 @@ META-INF/
 .project
 .settings/
 /bin
-
+.dbeaver
+/logs
+/target
 # IDEA #
 .idea/
 *.iml
