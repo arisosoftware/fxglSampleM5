@@ -34,6 +34,7 @@ import com.almasb.fxgl.input.UserAction;
 import com.almasb.fxgl.pathfinding.CellState;
 import com.almasb.fxgl.pathfinding.astar.AStarGrid;
 import com.almasb.fxgl.ui.UI;
+import com.almasb.fxglgames.mario.ui.LevelEndScene;
 import com.almasb.fxglgames.pacman.components.PlayerComponent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -47,8 +48,8 @@ import static com.almasb.fxglgames.pacman.PacmanType.*;
 /**
  * This is a basic demo of Pacman.
  *
- * Assets taken from opengameart.org
- * (Carlos Alface 2014 kalface@gmail.com, http://c-toy.blogspot.pt/).
+ * Assets taken from opengameart.org (Carlos Alface 2014 kalface@gmail.com,
+ * http://c-toy.blogspot.pt/).
  *
  * @author Almas Baimagambetov (AlmasB) (almaslvl@gmail.com)
  */
@@ -64,52 +65,52 @@ public class PacmanApp extends GameApplication {
     public static final int TIME_PER_LEVEL = 100;
 
     public Entity getPlayer() {
-        return getGameWorld().getSingleton(PLAYER);
+	return getGameWorld().getSingleton(PLAYER);
     }
 
     public PlayerComponent getPlayerComponent() {
-        return getPlayer().getComponent(PlayerComponent.class);
+	return getPlayer().getComponent(PlayerComponent.class);
     }
 
     @Override
     protected void initSettings(GameSettings settings) {
-        settings.setWidth(MAP_SIZE * BLOCK_SIZE + UI_SIZE);
-        settings.setHeight(MAP_SIZE * BLOCK_SIZE);
-        settings.setTitle("FXGL Pac-man");
-        settings.setVersion("1.0");
-        settings.setManualResizeEnabled(true);
-        settings.setPreserveResizeRatio(true);
+	settings.setWidth(MAP_SIZE * BLOCK_SIZE + UI_SIZE);
+	settings.setHeight(MAP_SIZE * BLOCK_SIZE);
+	settings.setTitle("FXGL Pac-man");
+	settings.setVersion("1.0");
+	settings.setManualResizeEnabled(true);
+	settings.setPreserveResizeRatio(true);
     }
 
     @Override
     protected void initInput() {
-        getInput().addAction(new UserAction("Up") {
-            @Override
-            protected void onAction() {
-                getPlayerComponent().up();
-            }
-        }, KeyCode.W);
+	getInput().addAction(new UserAction("Up") {
+	    @Override
+	    protected void onAction() {
+		getPlayerComponent().up();
+	    }
+	}, KeyCode.W);
 
-        getInput().addAction(new UserAction("Down") {
-            @Override
-            protected void onAction() {
-                getPlayerComponent().down();
-            }
-        }, KeyCode.S);
+	getInput().addAction(new UserAction("Down") {
+	    @Override
+	    protected void onAction() {
+		getPlayerComponent().down();
+	    }
+	}, KeyCode.S);
 
-        getInput().addAction(new UserAction("Left") {
-            @Override
-            protected void onAction() {
-                getPlayerComponent().left();
-            }
-        }, KeyCode.A);
+	getInput().addAction(new UserAction("Left") {
+	    @Override
+	    protected void onAction() {
+		getPlayerComponent().left();
+	    }
+	}, KeyCode.A);
 
-        getInput().addAction(new UserAction("Right") {
-            @Override
-            protected void onAction() {
-                getPlayerComponent().right();
-            }
-        }, KeyCode.D);
+	getInput().addAction(new UserAction("Right") {
+	    @Override
+	    protected void onAction() {
+		getPlayerComponent().right();
+	    }
+	}, KeyCode.D);
 //
 //        getInput().addAction(new UserAction("Teleport") {
 //            @Override
@@ -125,90 +126,100 @@ public class PacmanApp extends GameApplication {
 
     @Override
     protected void initGameVars(Map<String, Object> vars) {
-        vars.put("score", 0);
-        vars.put("coins", 0);
-        vars.put("teleport", 0);
-        vars.put("time", TIME_PER_LEVEL);
+	vars.put("score", 0);
+	vars.put("coins", 0);
+	vars.put("teleport", 0);
+	vars.put("time", TIME_PER_LEVEL);
     }
 
+    static int levelNum =1;
     @Override
     protected void initGame() {
-        getGameScene().setBackgroundColor(Color.DARKSLATEGREY);
+	getGameScene().setBackgroundColor(Color.DARKSLATEGREY);
 
-        getGameWorld().addEntityFactory(new PacmanFactory());
+	getGameWorld().addEntityFactory(new PacmanFactory());
 
-        Level level = getAssetLoader().loadLevel("pacman_level0.txt", new TextLevelLoader(40, 40, ' '));
-        getGameWorld().setLevel(level);
+	//Level level = getAssetLoader().loadLevel("pacman_level0.txt", new TextLevelLoader(40, 40, ' '));
+	
+	Level level = setLevelFromMap("bomb" + levelNum  + ".tmx");
+	
+	getGameWorld().setLevel(level);
+	
+	//Load config from tmx
+        //var shortestTime = level.getProperties().getDouble("star1time");	
+	//var levelTimeData = new LevelEndScene.LevelTimeData(shortestTime * 2.4, shortestTime*1.3, shortestTime);
+	//set("levelTimeData", levelTimeData);
+	  
 
-        // init the A* underlying grid and mark cells where blocks are as not walkable
-        AStarGrid grid = AStarGrid.fromWorld(getGameWorld(), MAP_SIZE, MAP_SIZE, BLOCK_SIZE, BLOCK_SIZE, (type) -> {
-            if (type == BLOCK)
-                return CellState.NOT_WALKABLE;
+	// init the A* underlying grid and mark cells where blocks are as not walkable
+	AStarGrid grid = AStarGrid.fromWorld(getGameWorld(), MAP_SIZE, MAP_SIZE, BLOCK_SIZE, BLOCK_SIZE, (type) -> {
+	    if (type == BLOCK)
+		return CellState.NOT_WALKABLE;
 
-            return CellState.WALKABLE;
-        });
+	    return CellState.WALKABLE;
+	});
 
-        set("grid", grid);
+	set("grid", grid);
 
-        // find out number of coins
-        set("coins", getGameWorld().getEntitiesByType(COIN).size());
+	// find out number of coins
+	set("coins", getGameWorld().getEntitiesByType(COIN).size());
 
-        run(() -> inc("time", -1), Duration.seconds(1));
+	run(() -> inc("time", -1), Duration.seconds(1));
 
-        getWorldProperties().<Integer>addListener("time", (old, now) -> {
-            if (now == 0) {
-                onPlayerKilled();
-            }
-        });
+	getWorldProperties().<Integer>addListener("time", (old, now) -> {
+	    if (now == 0) {
+		onPlayerKilled();
+	    }
+	});
     }
 
     @Override
     protected void initPhysics() {
-        onCollisionBegin(PLAYER, ENEMY, (p, e) -> onPlayerKilled());
+	onCollisionBegin(PLAYER, ENEMY, (p, e) -> onPlayerKilled());
 
-        onCollisionCollectible(PLAYER, COIN, c -> onCoinPickup());
+	onCollisionCollectible(PLAYER, COIN, c -> onCoinPickup());
     }
 
     @Override
     protected void initUI() {
-        UI ui = getAssetLoader().loadUI("pacman_ui.fxml", new PacmanUIController());
-        ui.getRoot().setTranslateX(MAP_SIZE * BLOCK_SIZE);
+	UI ui = getAssetLoader().loadUI("pacman_ui.fxml", new PacmanUIController());
+	ui.getRoot().setTranslateX(MAP_SIZE * BLOCK_SIZE);
 
-        getGameScene().addUI(ui);
+	getGameScene().addUI(ui);
     }
 
     @Override
     protected void onUpdate(double tpf) {
-        if (requestNewGame) {
-            requestNewGame = false;
-            getGameController().startNewGame();
-        }
-    }
+	if (requestNewGame) {
+	    requestNewGame = false;
+	    getGameController().startNewGame();
+	}
+    } 
 
     public void onCoinPickup() {
-        inc("coins", -1);
-        inc("score", +50);
+	inc("coins", -1);
+	inc("score", +50);
 
-        if (geti("score") % 2000 == 0) {
-            inc("teleport", +1);
-        }
+	if (geti("score") % 2000 == 0) {
+	    inc("teleport", +1);
+	}
 
-        if (geti("coins") == 0) {
-            gameOver();
-        }
+	if (geti("coins") == 0) {
+	    gameOver();
+	}
     }
 
     private boolean requestNewGame = false;
 
     public void onPlayerKilled() {
-        requestNewGame = true;
+	requestNewGame = true;
     }
 
     private void gameOver() {
-        getDialogService().showMessageBox("Demo Over. Press OK to exit", getGameController()::exit);
+	getDialogService().showMessageBox("Demo Over. Press OK to exit", getGameController()::exit);
     }
 
     public static void main(String[] args) {
-        launch(args);
+	launch(args);
     }
 }

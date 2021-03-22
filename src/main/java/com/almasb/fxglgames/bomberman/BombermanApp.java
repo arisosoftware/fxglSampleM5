@@ -116,7 +116,7 @@ public class BombermanApp extends GameApplication {
     protected void initGame() {
         getGameWorld().addEntityFactory(new BombermanFactory());
 
-        Level level = getAssetLoader().loadLevel("0.txt", new TextLevelLoader(40, 40, '0'));
+        Level level = getAssetLoader().loadLevel("bomb1.txt", new TextLevelLoader(40, 40, '0'));
         getGameWorld().setLevel(level);
 
         spawn("BG");

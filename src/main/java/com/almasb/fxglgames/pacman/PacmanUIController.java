@@ -53,24 +53,24 @@ public class PacmanUIController implements UIController {
 
     @Override
     public void init() {
-        timeBar = new ProgressBar(false);
-        timeBar.setHeight(50);
-        timeBar.setTranslateX(-60);
-        timeBar.setTranslateY(100);
-        timeBar.setRotate(-90);
-        timeBar.setFill(Color.GREEN);
-        timeBar.setLabelVisible(false);
-        timeBar.setMaxValue(PacmanApp.TIME_PER_LEVEL);
-        timeBar.setMinValue(0);
-        timeBar.setCurrentValue(PacmanApp.TIME_PER_LEVEL);
-        timeBar.currentValueProperty().bind(getip("time"));
+	timeBar = new ProgressBar(false);
+	timeBar.setHeight(50);
+	timeBar.setTranslateX(-60);
+	timeBar.setTranslateY(100);
+	timeBar.setRotate(-90);
+	timeBar.setFill(Color.GREEN);
+	timeBar.setLabelVisible(false);
+	timeBar.setMaxValue(PacmanApp.TIME_PER_LEVEL);
+	timeBar.setMinValue(0);
+	timeBar.setCurrentValue(PacmanApp.TIME_PER_LEVEL);
+	timeBar.currentValueProperty().bind(getip("time"));
 
-        root.getChildren().addAll(timeBar);
+	root.getChildren().addAll(timeBar);
 
-        labelScore.setFont(getUIFactoryService().newFont(18));
-        labelTeleport.setFont(getUIFactoryService().newFont(12));
+	labelScore.setFont(getUIFactoryService().newFont(18));
+	labelTeleport.setFont(getUIFactoryService().newFont(12));
 
-        labelScore.textProperty().bind(getip("score").asString("Score:\n%d"));
-        labelTeleport.textProperty().bind(getip("teleport").asString("Teleports:\n[%d]"));
+	labelScore.textProperty().bind(getip("score").asString("Score:\n%d"));
+	labelTeleport.textProperty().bind(getip("teleport").asString("Teleports:\n[%d]"));
     }
 }
