@@ -30,6 +30,7 @@ import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.level.Level;
 import com.almasb.fxgl.entity.level.text.TextLevelLoader;
+import com.almasb.fxgl.entity.level.tiled.TMXLevelLoader;
 import com.almasb.fxgl.input.UserAction;
 import com.almasb.fxgl.pathfinding.CellState;
 import com.almasb.fxgl.pathfinding.astar.AStarGrid;
@@ -132,17 +133,20 @@ public class PacmanApp extends GameApplication {
 	vars.put("time", TIME_PER_LEVEL);
     }
 
-    static int levelNum =1;
+    static int levelNum =2;
     @Override
     protected void initGame() {
 	getGameScene().setBackgroundColor(Color.DARKSLATEGREY);
 
-	getGameWorld().addEntityFactory(new PacmanFactory());
+	var world = getGameWorld();
+	
+	world.addEntityFactory(new PacmanFactory());
 
 	//Level level = getAssetLoader().loadLevel("pacman_level0.txt", new TextLevelLoader(40, 40, ' '));
+	String mapFileName = "bomb" + levelNum  + ".tmx";
 	
-	Level level = setLevelFromMap("bomb" + levelNum  + ".tmx");
-	
+	Level level =getAssetLoader().loadLevel(mapFileName, new TMXLevelLoader()) ;
+		
 	getGameWorld().setLevel(level);
 	
 	//Load config from tmx
