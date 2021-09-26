@@ -39,7 +39,7 @@ public class MarioLoadingScene extends LoadingScene {
         hbox.setTranslateX(getAppWidth() / 2 - 20);
         hbox.setTranslateY(getAppHeight() / 2);
 
-        var playerTexture = texture("player.png").subTexture(new Rectangle2D(0, 0, 32, 42));
+        var playerTexture = texture("player.png").subTexture(new Rectangle2D(0, 0, 32, 32));
         playerTexture.setTranslateX(getAppWidth() / 2 - 32/2);
         playerTexture.setTranslateY(getAppHeight() / 2 - 42/2);
 
