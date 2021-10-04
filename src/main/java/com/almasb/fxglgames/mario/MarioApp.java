@@ -54,6 +54,8 @@ public class MarioApp extends GameApplication {
 	private LazyValue<LevelEndScene> levelEndScene = new LazyValue<>(() -> new LevelEndScene());
 
     private Entity player;
+    
+    private Entity coiner;
 
     @Override
     protected void initInput() {
@@ -119,7 +121,7 @@ public class MarioApp extends GameApplication {
     @Override
     protected void onPreInit() {
         getSettings().setGlobalMusicVolume(0.25);
-        loopBGM("BGM_dash_runner.wav");
+   //   loopBGM("BGM_dash_runner.wav");
     }
 
     @Override
@@ -137,6 +139,11 @@ public class MarioApp extends GameApplication {
 
         spawn("background");
 
+        coiner = spawn("Signer", 50, 50);
+
+        set("player", player);
+        set("Signer", coiner);
+        
         Viewport viewport = getGameScene().getViewport();
         viewport.setBounds(-1500, 0, 250 * 70, getAppHeight());
         viewport.bindToEntity(player, getAppWidth() / 2, getAppHeight() / 2);
@@ -145,7 +152,7 @@ public class MarioApp extends GameApplication {
 
     @Override
     protected void initPhysics() {
-        getPhysicsWorld().setGravity(0, 760);
+     //   getPhysicsWorld().setGravity(0, 760);
         getPhysicsWorld().addCollisionHandler(new PlayerButtonHandler());
 
         onCollisionOneTimeOnly(PLAYER, EXIT_SIGN, (player, sign) -> {
